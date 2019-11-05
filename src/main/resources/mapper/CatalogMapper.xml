@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.whc.crawler.service.dao.CatalogMapper">
+
+    <insert id="insertForeach" parameterType="java.util.List" useGeneratedKeys="true">
+        insert into catalog
+        ( novel_id,name,origin_catalog_id,sort_num,is_free,word_count,create_date,grab_date)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.novelId},
+            #{item.name},
+            #{item.originCatalogId},
+            #{item.sortNum},
+            #{item.isFree},
+            #{item.wordCount},
+            #{item.createDate},
+            #{item.grabDate}
+            )
+        </foreach>
+    </insert>
+</mapper>
