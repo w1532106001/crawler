@@ -163,7 +163,6 @@ public class QiDianCollector implements ICollector {
                 if(StringUtils.isNotBlank(originBookId)){
                     novel.setOriginBookId(originBookId);
                 }
-
             }
             novelList.add(novel);
         }
