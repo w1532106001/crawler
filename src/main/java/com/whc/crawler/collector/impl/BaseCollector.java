@@ -4,7 +4,6 @@ import com.whc.crawler.collector.ICollector;
 import com.whc.crawler.entity.Catalog;
 import com.whc.crawler.entity.Novel;
 import com.whc.crawler.repository.CatalogRepository;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -30,13 +29,13 @@ public class BaseCollector implements ICollector {
     @Override
     public List<Catalog> grabUpdate(Novel novel) {
         List<Catalog> catalogList = grabCateLog(novel);
-        return catalogList.stream().filter(e->{
+        return catalogList.stream().filter(e -> {
                     Date date = new Date();
                     calendar.setTime(date);
                     calendar.add(Calendar.DAY_OF_MONTH, -1);
-                    return sdf2.format(e.getCreateDate()).equals(sdf2.format(date))||sdf2.format(e.getCreateDate()).equals(sdf2.format(calendar.getTime()));
+                    return sdf2.format(e.getCreateDate()).equals(sdf2.format(date)) || sdf2.format(e.getCreateDate()).equals(sdf2.format(calendar.getTime()));
                 }
-        ).filter(e-> null == catalogRepository.findByNameAndNovelIdAndOriginCatalogId(e.getName(), e.getNovelId(),e.getOriginCatalogId())).collect(Collectors.toList());
+        ).filter(e -> null == catalogRepository.findByNameAndNovelIdAndOriginCatalogId(e.getName(), e.getNovelId(), e.getOriginCatalogId())).collect(Collectors.toList());
     }
 
     @Override

@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 
-@Service("QiDian")
+@Service("ZongHeng")
 @Scope(value = "prototype")
 @Slf4j
-public class ZongHengCollector extends BaseCollector{
+public class ZongHengCollector extends BaseCollector {
     private static final String URL_LIST = "https://betawww.zongheng.com";
     private static final String CATALOG_URL = "https://www.zongheng.com/list/{0}.html";
+
     @Override
     public List<Catalog> grabCateLog(Novel result) {
         return super.grabCateLog(result);

@@ -1,11 +1,7 @@
 package com.whc.crawler.collector.impl;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.whc.crawler.collector.ICollector;
 import com.whc.crawler.entity.Catalog;
 import com.whc.crawler.entity.Novel;
-import com.whc.crawler.repository.CatalogRepository;
 import com.whc.crawler.utils.UserAgentUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -13,19 +9,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service("SeventeenK")
 @Scope(value = "prototype")
@@ -34,17 +26,12 @@ public class SeventeenKCollector extends BaseCollector {
     private static final String URL_LIST = "https://www.17K.com";
     private static final String CATALOG_URL = "https://www.17K.com/list/{0}.html";
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//    private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-//    private static final Calendar calendar = Calendar.getInstance();
-//
-//    @Resource
-//    private CatalogRepository catalogRepository;
 
     @Override
     public List<Catalog> grabCateLog(Novel novel) {
         Document document = null;
         try {
-            document = Jsoup.connect(CATALOG_URL.replace("{0}",novel.getOriginBookId())).get();
+            document = Jsoup.connect(CATALOG_URL.replace("{0}", novel.getOriginBookId())).get();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,13 +39,13 @@ public class SeventeenKCollector extends BaseCollector {
             return null;
         }
         Elements volume = document.getElementsByClass("Volume");
-        if (volume == null||volume.size()==0) {
+        if (volume == null || volume.size() == 0) {
             return null;
         }
         volume.select("a.folding").remove();
 
         Elements lines = volume.select("a");
-        if (lines == null||lines.size()==0) {
+        if (lines == null || lines.size() == 0) {
             return null;
         }
         List<Catalog> catalogList = new ArrayList<>();
@@ -70,17 +57,17 @@ public class SeventeenKCollector extends BaseCollector {
             }
             catalog.setName(line.text().trim());
             String title = line.attr("title");
-            if(StringUtils.isNotBlank(title)){
+            if (StringUtils.isNotBlank(title)) {
                 String[] titles = title.split("\r");
-                if(titles.length > 0){
+                if (titles.length > 0) {
                     for (String s : titles) {
-                        if(s.contains("字数：")){
-                            catalog.setWordCount(Integer.valueOf(s.replace("字数：","").trim()));
+                        if (s.contains("字数：")) {
+                            catalog.setWordCount(Integer.valueOf(s.replace("字数：", "").trim()));
                         }
-                        if(s.contains("更新日期:")){
+                        if (s.contains("更新日期:")) {
                             try {
-                                String time = s.replace("更新日期:","");
-                                if(StringUtils.isNotBlank(time)){
+                                String time = s.replace("更新日期:", "");
+                                if (StringUtils.isNotBlank(time)) {
                                     catalog.setCreateDate(sdf.parse(time.trim()));
                                 }
                             } catch (ParseException e) {
@@ -91,12 +78,12 @@ public class SeventeenKCollector extends BaseCollector {
                 }
             }
             String url = line.attr("href");
-            if(StringUtils.isNotBlank(url)){
-                String catalogId = url.replace("/","")
-                        .replace("chapter","")
-                        .replace(".html","")
-                        .replace(novel.getOriginBookId(),"");
-                if(StringUtils.isNotBlank(catalogId)){
+            if (StringUtils.isNotBlank(url)) {
+                String catalogId = url.replace("/", "")
+                        .replace("chapter", "")
+                        .replace(".html", "")
+                        .replace(novel.getOriginBookId(), "");
+                if (StringUtils.isNotBlank(catalogId)) {
                     catalog.setOriginCatalogId(catalogId);
                 }
             }
@@ -110,37 +97,6 @@ public class SeventeenKCollector extends BaseCollector {
 
         return catalogList;
     }
-
-//    @Override
-//    public List<Catalog> grabUpdate(Novel novel) {
-//        List<Catalog> catalogList = grabCateLog(novel);
-//        List<Catalog> resultCatalogList = null;
-//        try {
-//            resultCatalogList = catalogList.stream().filter(e->{
-//                        Date date = new Date();
-//                        calendar.setTime(date);
-//                        calendar.add(Calendar.DAY_OF_MONTH, -1);
-//                        return sdf2.format(e.getCreateDate()).equals(sdf2.format(date))||sdf2.format(e.getCreateDate())
-//                                .equals(sdf2.format(calendar.getTime()));
-//                    }
-//            ).filter(e-> null == catalogRepository.findByNameAndNovelIdAndOriginCatalogId(e.getName(),
-//                    e.getNovelId(),e.getOriginCatalogId())).collect(Collectors.toList());
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            System.out.println(catalogList);
-//            for (Catalog c:
-//                    catalogList) {
-//                Date date = new Date();
-//                calendar.setTime(date);
-//                calendar.add(Calendar.DAY_OF_MONTH, -1);
-//                Boolean b = sdf2.format(c.getCreateDate()).equals(sdf2.format(date))||sdf2.format(c.getCreateDate())
-//                        .equals(sdf2.format(calendar.getTime()));
-//                System.out.println(b);
-//            }
-//        }
-//        return resultCatalogList;
-//    }
-
 
     @Override
     public List<Novel> grabNovel() {
@@ -180,12 +136,12 @@ public class SeventeenKCollector extends BaseCollector {
 
             Document infoDocument = null;
             try {
-                infoDocument = Jsoup.connect(novel.getUrl().replace("//","https://")).userAgent(UserAgentUtil.getRandomUserAgent()).get();
+                infoDocument = Jsoup.connect(novel.getUrl().replace("//", "https://")).userAgent(UserAgentUtil.getRandomUserAgent()).get();
             } catch (IOException e) {
                 e.printStackTrace();
-                log.error("网络异常,url:"+novel.getUrl());
+                log.error("网络异常,url:" + novel.getUrl());
             }
-            if(infoDocument==null){
+            if (infoDocument == null) {
                 return null;
             }
             Element bookInfo = infoDocument.getElementById("bookInfo");
@@ -204,11 +160,11 @@ public class SeventeenKCollector extends BaseCollector {
 
             String statusString = infoDocument.getElementsByClass("label").text();
             if (StringUtils.isNotBlank(statusString)) {
-                if(statusString.contains("连载")){
+                if (statusString.contains("连载")) {
                     novel.setStatus(Byte.valueOf("0"));
-                }else if(statusString.contains("完结")){
+                } else if (statusString.contains("完结")) {
                     novel.setStatus(Byte.valueOf("1"));
-                }else {
+                } else {
                     novel.setStatus(null);
                 }
             }
@@ -225,12 +181,11 @@ public class SeventeenKCollector extends BaseCollector {
             }
 
 
-
             novel.setCreateDate(null);
             novel.setGrabDate(new Date());
             novel.setOrigin("17K");
-            String originBookId = novel.getUrl().replace("//www.17k.com/book/","")
-                    .replace(".html","").trim();
+            String originBookId = novel.getUrl().replace("//www.17k.com/book/", "")
+                    .replace(".html", "").trim();
             if (StringUtils.isNotBlank(originBookId)) {
                 novel.setOriginBookId(originBookId);
             }

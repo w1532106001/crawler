@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 
-@Service("QiDian")
+@Service("HeiYan")
 @Scope(value = "prototype")
 @Slf4j
-public class HeiYanCollector extends BaseCollector{
+public class HeiYanCollector extends BaseCollector {
     private static final String URL_LIST = "https://www.heiyan.com";
     private static final String CATALOG_URL = "https://www.heiyan.com/list/{0}.html";
+
     @Override
     public List<Catalog> grabCateLog(Novel result) {
         return super.grabCateLog(result);

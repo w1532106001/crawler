@@ -2,10 +2,8 @@ package com.whc.crawler.collector.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.whc.crawler.collector.ICollector;
 import com.whc.crawler.entity.Catalog;
 import com.whc.crawler.entity.Novel;
-import com.whc.crawler.repository.CatalogRepository;
 import com.whc.crawler.utils.UserAgentUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -14,19 +12,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service("QiDian")
 @Scope(value = "prototype")
@@ -34,12 +26,6 @@ import java.util.stream.Collectors;
 public class QiDianCollector extends BaseCollector {
     private static final String URL_LIST = "https://www.qidian.com";
     private static final String CATALOG_URL = "https://book.qidian.com/ajax/book/category?bookId=";
-//    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//    private static final SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
-//    private static final Calendar calendar = Calendar.getInstance();
-//
-//    @Resource
-//    private CatalogRepository catalogRepository;
 
     @Override
     public List<Catalog> grabCateLog(Novel novel) {
@@ -91,19 +77,6 @@ public class QiDianCollector extends BaseCollector {
         return catalogList;
     }
 
-//    @Override
-//    public List<Catalog> grabUpdate(Novel novel) {
-//        List<Catalog> catalogList = grabCateLog(novel);
-//        return catalogList.stream().filter(e->{
-//                    Date date = new Date();
-//                    calendar.setTime(date);
-//                    calendar.add(Calendar.DAY_OF_MONTH, -1);
-//                    return sdf2.format(e.getCreateDate()).equals(sdf2.format(date))||sdf2.format(e.getCreateDate()).equals(sdf2.format(calendar.getTime()));
-//                }
-//        ).filter(e-> null == catalogRepository.findByNameAndNovelIdAndOriginCatalogId(e.getName(), e.getNovelId(),e.getOriginCatalogId())).collect(Collectors.toList());
-//    }
-
-
     @Override
     public List<Novel> grabNovel() {
         Document document = null;
@@ -150,7 +123,7 @@ public class QiDianCollector extends BaseCollector {
                 novel.setAuthor(author);
             }
 
-            String category = tr.getElementsByClass("classify").text().replace("「","").replace("」","");
+            String category = tr.getElementsByClass("classify").text().replace("「", "").replace("」", "");
             if (StringUtils.isNotBlank(category)) {
                 novel.setCategory(category);
             }
@@ -164,12 +137,12 @@ public class QiDianCollector extends BaseCollector {
             }
             Document infoDocument = null;
             try {
-                infoDocument = Jsoup.connect(novel.getUrl().replace("//","https://")).userAgent(UserAgentUtil.getRandomUserAgent()).get();
+                infoDocument = Jsoup.connect(novel.getUrl().replace("//", "https://")).userAgent(UserAgentUtil.getRandomUserAgent()).get();
             } catch (IOException e) {
                 e.printStackTrace();
-                log.error("网络异常,url:"+novel.getUrl());
+                log.error("网络异常,url:" + novel.getUrl());
             }
-            if(infoDocument==null){
+            if (infoDocument == null) {
                 return null;
             }
             Elements bookInfo = infoDocument.getElementsByClass("book-info");

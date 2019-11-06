@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 public class Novel {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     /**
      * 唯一标识

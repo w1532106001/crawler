@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -60,8 +61,8 @@ public class CollectTask implements Runnable {
             try {
                 //判断小说是否存在 存在增量更新不存在全量更新
                 Novel resultNovel = novelRepository.findNovelByUrl(novel.getUrl());
-                if(null==resultNovel){
-                    synchronized (this){
+                if (null == resultNovel) {
+                    synchronized (this) {
                         Novel result = novelRepository.save(novel);
                         List<Catalog> catalogList = collector.grabCateLog(result);
                         if (catalogList != null && catalogList.size() > 0) {
@@ -70,13 +71,11 @@ public class CollectTask implements Runnable {
                         }
                     }
 
-                }else{
-                    /**
-                     * 更新章节
-                     */
+                } else {
+                    //更新章节
                     List<Catalog> catalogList = collector.grabUpdate(resultNovel);
-                    if(null!=catalogList&&catalogList.size()>0){
-                        synchronized (this){
+                    if (null != catalogList && catalogList.size() > 0) {
+                        synchronized (this) {
                             catalogMapper.insertForeach(catalogList);
                         }
                     }
@@ -88,6 +87,5 @@ public class CollectTask implements Runnable {
         }
         Long pageCollectTime = System.currentTimeMillis();
         LOGGER.info("采集完成,耗时:" + (pageCollectTime - startTime) + "ms");
-
     }
 }
