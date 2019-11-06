@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Service("collectScheduleService")
 public class CollectScheduleServiceImpl implements ICollectScheduleService {
-
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CollectScheduleServiceImpl.class.getName());
 
@@ -41,11 +39,10 @@ public class CollectScheduleServiceImpl implements ICollectScheduleService {
     };
 
     private static final ScheduledThreadPoolExecutor SCHEDULED_EXECUTOR =
-        new ScheduledThreadPoolExecutor(CORE_POOL_SIZE, THREAD_FACTORY);
+            new ScheduledThreadPoolExecutor(CORE_POOL_SIZE, THREAD_FACTORY);
 
     private static final String[] ARRAY_COLLECTOR = {
-//        "WeiXinQun",
-//         "QunFenXiang"
+            "SeventeenK",
             "QiDian"
     };
 
@@ -61,8 +58,9 @@ public class CollectScheduleServiceImpl implements ICollectScheduleService {
 
     @Override
     public void executeSchedule() {
-        CollectTask collectTask = null;
         for (String collector : COLLECTOR_NAMES) {
+            CollectTask collectTask = null;
+
             LOGGER.info("collector name is " + collector);
             if (TASKS.containsKey(collector)) {
                 collectTask = TASKS.get(collector);
@@ -70,6 +68,7 @@ public class CollectScheduleServiceImpl implements ICollectScheduleService {
             if (collectTask == null) {
                 collectTask = (CollectTask) applicationContext.getBean("collectTask");
                 collectTask.initCollector(collector);
+
             }
             SCHEDULED_EXECUTOR.execute(collectTask);
             TASKS.put(collector, collectTask);

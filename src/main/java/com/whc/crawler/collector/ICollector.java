@@ -14,21 +14,23 @@ import java.util.List;
 public interface ICollector {
 
     /**
-     *
+     * 抓取目录信息
      * @param result 书籍
-     * @return 抓取目录信息
+     * @return List<Catalog>
      */
     List<Catalog> grabCateLog(Novel result);
 
     /**
-     *
-     * @param num 页码
-     * @return 抓取小说信息
+     * 抓取更新
+     * @param result 书籍
+     * @return List<Catalog>
      */
-    List<Novel> grabNovel(Integer num);
+    List<Catalog> grabUpdate(Novel result);
 
     /**
-     * @return 抓取小说分页size
+     * 抓取最新更新小说信息
+     * @return List<Novel>
      */
-    Integer grabNovelPageNum();
+    List<Novel> grabNovel();
+
 }
