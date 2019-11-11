@@ -2,7 +2,6 @@ package com.whc.crawler.collector.impl;
 
 import com.whc.crawler.entity.Catalog;
 import com.whc.crawler.entity.Novel;
-import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.context.annotation.Scope;
@@ -11,10 +10,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 
-@Service("HeiYan")
+@Service("boluobao")
 @Scope(value = "prototype")
-@Slf4j
-public class HeiYanCollector extends BaseCollector {
+public class BoLuoBaoCollector extends BaseCollector {
     private static final String URL_LIST = "https://www.heiyan.com/top/gengxin/day";
     private static final String CATALOG_URL = "https://www.heiyan.com/list/{0}.html";
 
